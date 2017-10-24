@@ -21,12 +21,12 @@ class Robot: public frc::IterativeRobot {
 
 	Joystick Drivestick;
 	Joystick OperatorStick;
-	VictorSP DriveLeft0;
-	VictorSP DriveLeft1;
-	VictorSP DriveLeft2;
-	VictorSP DriveRight0;
-	VictorSP DriveRight1;
-	VictorSP DriveRight2;
+	VictorSP DriveLeftFwd;
+	VictorSP DriveLeftRear;
+	VictorSP DriveRightFwd;
+	VictorSP DriveRightRear;
+	VictorSP Climb1;
+	VictorSP Climb2;
 	AHRS *ahrs;
 
 	DigitalInput DiIn9, DiIn8, DiIn7;
@@ -41,15 +41,19 @@ class Robot: public frc::IterativeRobot {
 
 public:
 	Robot() :
-			Adrive(DriveLeft0, DriveRight0), Drivestick(0), OperatorStick(1), DriveLeft0(
-					0), DriveLeft1(1), DriveLeft2(2), DriveRight0(3), DriveRight1(
-					4), DriveRight2(5), ahrs(NULL), DiIn9(9), DiIn8(8), DiIn7(7), OutputX(0), OutputY(0), OutputZ(0)  {
+			Adrive(DriveLeftFwd, DriveLeftRear, DriveRightFwd,DriveRightRear ),
+			Drivestick(0), OperatorStick(1), DriveLeftFwd(0), DriveLeftRear(1),
+			DriveRightFwd(2), DriveRightRear(3), Climb1(4), Climb2(5), ahrs(NULL),
+			DiIn9(9), DiIn8(8), DiIn7(7), OutputX(0), OutputY(0), OutputZ(0)  {
 
 
 	}
 
 	void RobotInit() {
-
+		// invert the left side motors
+		// you may need to change or remove this to match your robot
+		Adrive.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
+		Adrive.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 
 
 
@@ -94,10 +98,10 @@ public:
 
 	void RobotPeriodic() {
 		//links multiple motors together
-		DriveLeft1.Set(DriveLeft0.Get());
-		DriveLeft2.Set(DriveLeft0.Get());
-		DriveRight1.Set(DriveRight0.Get());
-		DriveRight2.Set(DriveRight0.Get());
+		DriveLeftRear.Set(DriveLeftFwd.Get());
+		Climb2.Set(DriveLeftFwd.Get());
+		DriveRightRear.Set(DriveRightFwd.Get());
+		Climb1.Set(DriveRightFwd.Get());
 
 
 
@@ -179,9 +183,9 @@ public:
 		OutputZ = (0.8 * OutputZ) + (0.2 * (SpeedRRotate - SpeedLRotate));
 
 		//Read Gyro Angle
-		double DrivegyroAngle = ahrs->GetAngle();
+		double DriveAngle = ahrs->GetAngle();
 
-		Adrive.MecanumDrive_Cartesian(OutputX, OutputY, OutputZ, DrivegyroAngle);
+		Adrive.MecanumDrive_Cartesian(OutputX, OutputY, OutputZ, DriveAngle);
 
 		//drive
 		if (Drivestick.GetRawButton(4)) {
@@ -234,12 +238,12 @@ public:
 
 
 		// PWM displays
-		SmartDashboard::PutNumber("Drive L0 Output", DriveLeft0.Get());
-		SmartDashboard::PutNumber("Drive L1 Output", DriveLeft1.Get());
-		SmartDashboard::PutNumber("Drive L2 Output", DriveLeft2.Get());
-		SmartDashboard::PutNumber("Drive R0 Output", DriveRight0.Get());
-		SmartDashboard::PutNumber("Drive R1 Output", DriveRight1.Get());
-		SmartDashboard::PutNumber("Drive R2 Output", DriveRight2.Get());
+		SmartDashboard::PutNumber("Drive L0 Output", DriveLeftFwd.Get());
+		SmartDashboard::PutNumber("Drive L1 Output", DriveLeftRear.Get());
+		SmartDashboard::PutNumber("Drive R0 Output", DriveRightFwd.Get());
+		SmartDashboard::PutNumber("Drive R1 Output", DriveRightRear.Get());
+		SmartDashboard::PutNumber("Climb 1 Output", Climb2.Get());
+		SmartDashboard::PutNumber("Climb 2 Output", Climb1.Get());
 
 
 	}
