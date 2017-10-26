@@ -52,6 +52,8 @@ public:
 	void RobotInit() {
 		// invert the left side motors
 		// you may need to change or remove this to match your robot
+		Adrive.SetInvertedMotor(RobotDrive::kFrontRightMotor, false);
+		Adrive.SetInvertedMotor(RobotDrive::kRearRightMotor, false);
 		Adrive.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
 		Adrive.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 
@@ -97,16 +99,6 @@ public:
 	}
 
 	void RobotPeriodic() {
-		//links multiple motors together
-		DriveLeftRear.Set(DriveLeftFwd.Get());
-		Climb2.Set(DriveLeftFwd.Get());
-		DriveRightRear.Set(DriveRightFwd.Get());
-		Climb1.Set(DriveRightFwd.Get());
-
-
-
-
-
 
 		//displays sensor and motor info to smartDashboard
 		SmartDashboardUpdate();
@@ -155,10 +147,10 @@ public:
 			 * movement, and Z axis for rotation. This sample does not use
 			 * field-oriented drive, so the gyro input is set to zero.
 			 */
-		double SpeedLinear = Drivestick.GetRawAxis(1) * -1; // get Left Yaxis value (forward movement)
-		double SpeedLateral = Drivestick.GetRawAxis(4) * -1; // get Right Xaxis value (side movement)
-		double SpeedLRotate =  Drivestick.GetRawAxis(2) * -1; // get Left Rotation value
-		double SpeedRRotate = Drivestick.GetRawAxis(3) * -1; // get Right Rotation value
+		double SpeedLinear = Drivestick.GetRawAxis(1) * 1; // get Left Yaxis value (forward movement)
+		double SpeedLateral = Drivestick.GetRawAxis(4) * 1; // get Right Xaxis value (Rotate movement)
+		double SpeedLRotate =  Drivestick.GetRawAxis(2) * 1; // get Left Straf value
+		double SpeedRRotate = Drivestick.GetRawAxis(3) * 1; // get Right Straf value
 
 		// Set dead band for X and Y axis
 		if (fabs(SpeedLinear) < Deadband)
@@ -177,15 +169,16 @@ public:
 			SpeedLateral = SpeedLateral * DriveCreepSpeed;  // Reduce drive speed
 		}
 
-		//slow down direction changes from 1 cycle to 5
-		OutputY = (0.8 * OutputY) + (0.2 * SpeedLinear);
-		OutputX = (0.8 * OutputX) + (0.2 * SpeedLateral);
-		OutputZ = (0.8 * OutputZ) + (0.2 * (SpeedRRotate - SpeedLRotate));
+
+		OutputY = SpeedLinear;
+		OutputX = SpeedLateral;
+		OutputZ = (SpeedRRotate - SpeedLRotate);
+
 
 		//Read Gyro Angle
 		double DriveAngle = ahrs->GetAngle();
 
-		Adrive.MecanumDrive_Cartesian(OutputX, OutputY, OutputZ, DriveAngle);
+		Adrive.MecanumDrive_Cartesian(OutputZ, OutputY, OutputX, DriveAngle);
 
 		//drive
 		if (Drivestick.GetRawButton(4)) {
@@ -264,7 +257,7 @@ START_ROBOT_CLASS(Robot)
 // Read Driver Joystick
 //double DRIV_CONTROL_LX = Drivestick.GetRawAxis(0), DriveCONTROL_LY = Drivestick.GetRawAxis(1);
 //double DRIV_CONTROL_LTRIG = Drivestick.GetRawAxis(2), DRIV_CONTROL_RTRIG = Drivestick.GetRawAxis(3) ;
-//double Drivestick.GetRawAxis(4) = Drivestick.GetRawAxis(4), DRIV_CONTROL_RY=Drivestick.GetRawAxis(5);
+//double DRIV_CONTROL_RX = Drivestick.GetRawAxis(4), DRIV_CONTROL_RY=Drivestick.GetRawAxis(5);
 //bool DRIV_CONTROL_A = Drivestick.GetRawButton(1), DRIV_CONTROL_B = Drivestick.GetRawButton(2);
 //bool DRIV_CONTROL_X = Drivestick.GetRawButton(3), Drivestick.GetRawButton(4)= Drivestick.GetRawButton(4);
 //bool DRIV_CONTROL_LBUM = Drivestick.GetRawButton(5), Drivestick.GetRawButton(6) = Drivestick.GetRawButton(6);
