@@ -106,7 +106,7 @@ public:
 	void DisabledPeriodic() {
 
 	}
-	void AutonomousPeriodic() { // ADLAI - This stuff probably shouldn't be in here, we shouldn't need to change program after autonomous begins?
+	void AutonomousPeriodic() {
 
 	}
 
@@ -185,42 +185,7 @@ public:
 			//when y button pushed
 				}
 
-		/*
-		 * MANIP CODE
-		 */
 
-		// Turn on the shooter when right hand trigger is pushed
-		if (OperatorStick.GetRawAxis(3) > Deadband) {
-
-			} else {
-
-			}
-
-
-
-		// Turn on Kicker Wheel, conveyor, and agitators when right trigger is pressed
-		if (OperatorStick.GetRawAxis(3) > Deadband ) {
-		} else {
-		}
-
-		//Spin intake when left trigger is pushed
-		if (OperatorStick.GetRawAxis(2) > Deadband) {
-		} else {
-		}
-
-		// RH Bumper - Retract Intake
-		if (OperatorStick.GetRawButton(6)) {
-		}
-		// LH Bumper - Deploy Intake
-		if (OperatorStick.GetRawButton(5)) {
-		}
-
-		//A button for intake un-jam
-		if (OperatorStick.GetRawButton(1)){
-		}
-		else{
-
-		}
 
 
 
